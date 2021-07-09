@@ -4,7 +4,8 @@
 * P1 orange corporate metadatas (e.g. app code) get propagated to applications with precedence for CF profile: org/space/instance
 * P2 orange corporate metadatas get indexed in osb-cmdb to be queryable
 * P3 backing broker input validation remain simple for common/useful fields, including orange corporate metadata
-* P3 x-osb-cmdb param syntax is consistent
+* P3 x-osb-cmdb param syntax is consistent / makes sense to backing service brokers
+* ~~P4 x-osb-cmdb param content have default values for all possible keys in cf and k8s profiles to avoid conditional field inclusion in brokers such as coab~~
 
 ### Implementation steps and design alternatives
 
@@ -120,7 +121,12 @@ For K8S
 }
 ```
 
-
+Impl steps:
+* [ ] Revert Json structure commit
+* [ ] Refine test case to cover orange.com overriden keys use-case
+* [ ] Implement overriden orange.com keys use-case
+* [ ] Possibly add configuration flags to configure FQDN and white listed keys 
+* [ ] Possibly perform input validation on annotations values to have friendly user-facing errors on invalid characters in annotations 
 
 
 #### option 2: **Formatting as json structure**:
