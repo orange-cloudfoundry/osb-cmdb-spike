@@ -60,15 +60,15 @@
 * -: still duplicated work among backing brokers to select hierarchical annotations (org/space/instance)  
 * OK: need to check that existing backing brokers won't break. 2/2 confirmed. 
 * OK: coab maps this as yaml structure which was prototyped within paas-templates using grep/sed (yq is missing from coa containers)
-* - harder impl for osb-cmdb: different logic for x-osb-cmdb param and master-depl/cf
- * annotations set by CF on service instances (in the osb-cmdb) only support key/cf won't support Json structure => need to preserve existing code for this
- * x-osb-cmdb-param can use slightly different codebase to format context into the variable. 
- * prototyped multiple approaches to get feedback from the code   
-    * 1- modify com.orange.oss.osbcmdb.metadata.MetaData to include both structured objects (same as currently) and new json serialized strings in a new distinct member: challenging on Jackson serialization where two distinct fields need to serialize with same name, without conflicting, and optionally be empty. 
-    * 2- introduce new com.orange.oss.osbcmdb.metadata.StructuredMetaData with structured objects : duplicates most of the current code
-    * 3- relax strong binding from com.orange.oss.osbcmdb.metadata.MetaData.annotations and pass a boolean flag down the call chain to select between serialized string or structured json.
-    * 4- distinct FormatterService instance for serialized string or structured json (i.e. storing decision as a field instead of parameter call): reaches the upper limit for fields in OsbCmdbServiceInstance
- * [x] Option 3) seems the best balance so far
+* -: harder impl for osb-cmdb: different logic for x-osb-cmdb param and master-depl/cf
+   * annotations set by CF on service instances (in the osb-cmdb) only support key/cf won't support Json structure => need to preserve existing code for this
+   * x-osb-cmdb-param can use slightly different codebase to format context into the variable. 
+   * prototyped multiple approaches to get feedback from the code   
+      * 1- modify com.orange.oss.osbcmdb.metadata.MetaData to include both structured objects (same as currently) and new json serialized strings in a new distinct member: challenging on Jackson serialization where two distinct fields need to serialize with same name, without conflicting, and optionally be empty. 
+      * 2- introduce new com.orange.oss.osbcmdb.metadata.StructuredMetaData with structured objects : duplicates most of the current code
+      * 3- relax strong binding from com.orange.oss.osbcmdb.metadata.MetaData.annotations and pass a boolean flag down the call chain to select between serialized string or structured json.
+      * 4- distinct FormatterService instance for serialized string or structured json (i.e. storing decision as a field instead of parameter call): reaches the upper limit for fields in OsbCmdbServiceInstance
+   * [x] Option 3) seems the best balance so far
 * [ ] Refine acceptance tests ?
 * [ ] Introduce `brokered_service_context_orange_overrideable-key` ?
 
