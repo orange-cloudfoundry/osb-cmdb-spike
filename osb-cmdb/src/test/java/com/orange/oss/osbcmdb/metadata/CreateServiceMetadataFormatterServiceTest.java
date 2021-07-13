@@ -58,6 +58,15 @@ class CreateServiceMetadataFormatterServiceTest {
 	@Test
 	void populates_expected_labels_and_annotations_for_cf_profile() {
 		//given
+		HashMap<String, Object> organizationAnnotations = new HashMap<>();
+		organizationAnnotations.put("domain.com/org-key1", "org-value1");
+		organizationAnnotations.put("orange.com/overrideable-key", "org-value2");
+		HashMap<String, Object> spaceAnnotations = new HashMap<>();
+		spaceAnnotations.put("domain.com/space-key1", "space-value1");
+		spaceAnnotations.put("orange.com/overrideable-key", "space-value2");
+		HashMap<String, Object> instanceAnnotations = new HashMap<>();
+		instanceAnnotations.put("domain.com/instance-key1", "instance-value1");
+		instanceAnnotations.put("orange.com/overrideable-key", "instance-value2");
 		CreateServiceInstanceRequest request = CreateServiceInstanceRequest
 			.builder()
 			.serviceInstanceId("service-instance-id")
@@ -85,6 +94,9 @@ class CreateServiceMetadataFormatterServiceTest {
 				.property("spaceGuid", "space-guid-here")
 				.property("space_name", "space-name-here")
 				.property("instance_name", "instance-name-here")
+				.property("organization_annotations", organizationAnnotations)
+				.property("space_annotations", spaceAnnotations)
+				.property("instance_annotations", instanceAnnotations)
 				.build())
 			.originatingIdentity(CloudFoundryContext.builder()
 				.property("user_id", "user-id-here")
@@ -104,13 +116,21 @@ class CreateServiceMetadataFormatterServiceTest {
 			entry("brokered_service_instance_guid", "service-instance-id"),
 			entry("brokered_service_context_organization_guid", "organization-guid-here"),
 			entry("brokered_service_context_space_guid", "space-guid-here"),
-			entry("brokered_service_originating_identity_user_id", "user-id-here")
+			entry("brokered_service_originating_identity_user_id", "user-id-here"),
+			entry("brokered_service_context_orange_overrideable-key", "instance-value2")
 		);
 		assertThat(annotations).containsOnly(
 			entry("brokered_service_context_organization_name", "organization-name-here"),
 			entry("brokered_service_context_space_name", "space-name-here"),
 			entry("brokered_service_context_instance_name", "instance-name-here"),
-			entry("brokered_service_api_info_location", "api.my-cf.org/v2/info")
+			entry("brokered_service_api_info_location", "api.my-cf.org/v2/info"),
+			entry("brokered_service_context_organization_annotations",
+				"{\"orange.com/overrideable-key\":\"org-value2\",\"domain.com/org-key1\":\"org-value1\"}"),
+			entry("brokered_service_context_space_annotations",
+				"{\"orange.com/overrideable-key\":\"space-value2\",\"domain.com/space-key1\":\"space-value1\"}"),
+			entry("brokered_service_context_instance_annotations",
+				"{\"orange.com/overrideable-key\":\"instance-value2\",\"domain" +
+					".com/instance-key1\":\"instance-value1\"}")
 		);
 	}
 
